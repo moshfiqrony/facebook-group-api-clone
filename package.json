@@ -1,0 +1,32 @@
+{
+  "name": "facebook-group-api-clone",
+  "version": "1.0.0",
+  "description": "NodeJS based facebook group api clone",
+  "main": "index.js",
+  "author": "Md. Moshfiqur Rahman Rony<15203012@iubat.edu>>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec yarn restart",
+    "restart": "rm -rf dist && yarn build && yarn start",
+    "build": "babel src --out-dir dist"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http-status-codes": "^1.4.0",
+    "mongoose": "^5.9.25",
+    "mongoose-beautiful-unique-validation": "^7.1.1",
+    "morgan": "^1.10.0"
+  }
+}

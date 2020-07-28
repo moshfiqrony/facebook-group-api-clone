@@ -1,0 +1,38 @@
+{
+    "models": {
+        "user-model": {
+            "email": "String, required, not-null, not-blank",
+            "username": "String, required, not-null, not-blank",
+            "password": "String, Hash-type, required, not-null, not-blank"
+        },
+        "user-profile": {
+            "user": "Object id of User model",
+            "first_name": "String",
+            "last_name": "String",
+            "bio": "string"
+        },
+        "group": {
+            "name": "string, required",
+            "description": "string, required",
+            "type": ["PRIVATE", "PUBLIC", "CLOSED"],
+            "users": "Array of user model Object id"
+        },
+        "group-meta":{
+            "admins":"Array of user model Object id",
+            "moderator": "Array of user model Object id"
+        },
+        "posts": {
+            "content": "string, required",
+            "user": "Object id of User model"
+        },
+        "comments": {
+            "content": "string, required",
+            "user": "Object id of User model"
+        }
+    },
+    "actions":{
+        "user":["create && user-profile", "get && user-profile", "update"],
+        "user-profile": ["create", "get", "update"],
+        "group": ["create", "get", "Add user", "Remove user", ""]
+    }
+}
