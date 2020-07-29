@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { json } from 'body-parser';
 import ApiRouter from './routes';
 import { connect } from 'mongoose';
+import {login, register, protect} from './utils/auth'
 
 try {
     connect('mongodb://localhost:27017/fb-group-api',
@@ -22,7 +23,10 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-app.use('/api', ApiRouter)
+app.use('/api',protect, ApiRouter)
+app.post('/register', register)
+app.post('/login', login)
+app.post('/verify', protect)
 
 export const start = () => {
     app.listen(3007, () => {
