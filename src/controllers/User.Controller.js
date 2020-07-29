@@ -1,10 +1,12 @@
 import { UserModel } from '../models/User.Model'
 import { CREATED, NOT_ACCEPTABLE, NOT_FOUND, OK } from 'http-status-codes'
 import { hash } from 'bcrypt'
+
 export const getUser = async (req, res) => {
-    if (req?.params?.id) {
+    if (req?.user?.id) {
+        console.log(req.user)
         try {
-            const user = await UserModel.findById(req.params.id).exec();
+            const user = await UserModel.findById(req.user.id).exec();
             if (user) {
                 res.status(OK).send({ data: user })
             }
