@@ -1,16 +1,17 @@
 import { UserModel } from '../models/User.Model';
+import { TokenModel } from '../models/Token.Model';
 import { sign, verify } from 'jsonwebtoken';
 import { config } from './config';
 import { NOT_ACCEPTABLE, CREATED, OK, NOT_FOUND, UNAUTHORIZED } from 'http-status-codes'
 import { prepareError } from './functions'
 import { hash, compare } from 'bcrypt'
 
-  export const verifyToken = token =>
+export const verifyToken = token =>
     new Promise((resolve, reject) => {
-      verify(token, config.secrets.jwt, (err, payload) => {
-        if (err) return reject(err)
-        resolve(payload)
-      })
+        verify(token, config.secrets.jwt, (err, payload) => {
+            if (err) return reject(err)
+            resolve(payload)
+        })
     })
 
 export const newToken = (user) => {
@@ -39,16 +40,26 @@ export const login = async (req, res) => {
             ))
         }
         await compare(password, user.password)
-        .then(res => {
-            match = res
-        })
-        if(match){
+            .then(res => {
+                match = res
+            })
+        if (match) {
             let token = await newToken(user)
-            return res.status(OK).send({data: {
-                email: user.email,
-                username: user.username
-            }, token: token})
-        }else{
+            let authenticated = await TokenModel.findOneAndUpdate({ user: user.id }, {token: token})
+            if (authenticated && token) {
+                return res.status(OK).send({
+                    data: {
+                        email: user.email,
+                        username: user.username
+                    }, token: token
+                })
+            }
+            return res.status(NOT_ACCEPTABLE).send(prepareError(
+                'Could not login',
+                'authentication',
+                'token'
+            ))
+        } else {
             return res.status(NOT_ACCEPTABLE).send(prepareError(
                 'Password not matched',
                 'verify',
@@ -57,7 +68,7 @@ export const login = async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(NOT_FOUND).send({error: error})
+        return res.status(NOT_FOUND).send({ error: error })
     }
 }
 
@@ -80,11 +91,12 @@ export const register = async (req, res) => {
                     pass = hash
                 })
             const user = await UserModel.create({ ...req.body, password: pass })
-            if (!user) {
+            const authenticated = await TokenModel.create({ user: user.id, token: '' })
+            if (!user || !authenticated) {
                 return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'))
             }
             return res.status(CREATED).send({
-                message: 'User created'
+                data: 'User created'
             });
         } catch (error) {
             return res.status(NOT_ACCEPTABLE).send({ error: error.errors[Object.keys(error.errors)[0]].properties })
@@ -100,17 +112,26 @@ export const register = async (req, res) => {
 
 export const protect = async (req, res, next) => {
     const token = req?.headers?.authorization?.split('Bearer ')[1];
-    if(!token){
+    if (!token) {
         return res.status(UNAUTHORIZED).send(prepareError('No valid token', 'token', 'validation'))
     }
     try {
         const payload = await verifyToken(token);
         const user = await UserModel.findById(payload.id)
-        .select('-password')
-        .exec();
-        req.user = user
-        next();
+            .select('-password')
+            .exec();
+        const authenticated = await TokenModel.findOne({user: user.id}).exec();
+        if(user && authenticated.token === token){
+            req.user = user
+            next();
+        }else{
+            return res.status(UNAUTHORIZED).send(prepareError(
+                'Could not validate',
+                'validation',
+                'token'
+            ))
+        }
     } catch (error) {
-        return res.status(UNAUTHORIZED).send({error: error})
+        return res.status(UNAUTHORIZED).send({ error: error })
     }
 }
