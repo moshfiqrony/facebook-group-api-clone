@@ -1,9 +1,13 @@
-import {Schema, model} from 'mongoose';
+import {Schema, model, SchemaTypes} from 'mongoose';
 
 const TokenSchema = Schema({
-    user: String,
+    user: {
+        type: SchemaTypes.ObjectId,
+        unique: 'User already exist',
+        required: 'User'
+    },
     token: String
-})
+}, {timestamps: true})
 
 TokenSchema.plugin(require('mongoose-beautiful-unique-validation'))
 

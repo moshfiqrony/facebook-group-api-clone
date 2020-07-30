@@ -1,14 +1,14 @@
-import { UserModel } from '../models/User.Model'
+import { UserModel, ProfileModel } from '../models/User.Model'
 import { CREATED, NOT_ACCEPTABLE, NOT_FOUND, OK } from 'http-status-codes'
 import { hash } from 'bcrypt'
 
 export const getUser = async (req, res) => {
     if (req?.user?.id) {
-        console.log(req.user)
         try {
-            const user = await UserModel.findById(req.user.id).exec();
-            if (user) {
-                res.status(OK).send({ data: user })
+            const user = await UserModel.findById(req.user.id).select('-updatedAt -createdAt -password').exec();
+            const profile = await ProfileModel.findOne({user: req.user.id}).select('-updatedAt -createdAt -user').exec();
+            if (user && profile) {
+                res.status(OK).send({ data: {user: user, profile: profile} })
             }
         } catch (error) {
             res.status(NOT_ACCEPTABLE).send({
@@ -53,5 +53,35 @@ export const createUser = async (req, res) => {
             })
     } catch (error) {
         res.status(400).send({ error: 'error' })
+    }
+}
+
+export const getProfile = async(req, res) => {
+    try {
+        const profile = await ProfileModel.findOne({user: req.user.id});
+        if(!profile){
+            throw new Error()
+        }
+        return res.status(OK).send({data: profile})
+    } catch (error) {
+        return res.status(NOT_FOUND).send({error: error})
+    }
+}
+
+export const updateProfile = async(req, res) => {
+    let profile = {};
+    const {first_name, last_name, bio} = req.body;
+    if(first_name){
+        profile.first_name = first_name;
+    }
+    if(last_name){
+        profile.last_name = last_name;
+    }
+    if(bio){
+        profile.bio = bio
+    }
+    const newProfile = await ProfileModel.updateOne({user: req.user.id}, profile).exec();
+    if(newProfile){
+        return res.status(OK).send({data: 'Updated'})
     }
 }

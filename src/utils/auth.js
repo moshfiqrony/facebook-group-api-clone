@@ -1,4 +1,4 @@
-import { UserModel } from '../models/User.Model';
+import { UserModel, ProfileModel } from '../models/User.Model';
 import { TokenModel } from '../models/Token.Model';
 import { sign, verify } from 'jsonwebtoken';
 import { config } from './config';
@@ -91,8 +91,9 @@ export const register = async (req, res) => {
                     pass = hash
                 })
             const user = await UserModel.create({ ...req.body, password: pass })
+            const profile = await ProfileModel.create({user: user.id})
             const authenticated = await TokenModel.create({ user: user.id, token: '' })
-            if (!user || !authenticated) {
+            if (!user || !authenticated || !profile) {
                 return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'))
             }
             return res.status(CREATED).send({
