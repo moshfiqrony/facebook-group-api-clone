@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import UserRoute from './User.Route'
+import UserRoute from './User.Routes'
 import { UNAUTHORIZED, NOT_FOUND, OK } from 'http-status-codes';
 import { prepareError } from '../utils/functions';
-import { TokenModel } from '../models/Token.Model';
+import { TokenModel } from '../models/Token.Models';
 
 const router = Router();
 

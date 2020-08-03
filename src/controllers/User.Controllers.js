@@ -1,4 +1,4 @@
-import { UserModel, ProfileModel } from '../models/User.Model'
+import { UserModel, ProfileModel } from '../models/User.Models'
 import { CREATED, NOT_ACCEPTABLE, NOT_FOUND, OK } from 'http-status-codes'
 import { hash } from 'bcrypt'
 

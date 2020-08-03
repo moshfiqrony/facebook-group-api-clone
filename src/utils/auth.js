@@ -1,5 +1,5 @@
-import { UserModel, ProfileModel } from '../models/User.Model';
-import { TokenModel } from '../models/Token.Model';
+import { UserModel, ProfileModel } from '../models/User.Models';
+import { TokenModel } from '../models/Token.Models';
 import { sign, verify } from 'jsonwebtoken';
 import { config } from './config';
 import { NOT_ACCEPTABLE, CREATED, OK, NOT_FOUND, UNAUTHORIZED } from 'http-status-codes'
