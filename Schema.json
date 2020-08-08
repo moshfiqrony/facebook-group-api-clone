@@ -19,15 +19,19 @@
         },
         "group-meta":{
             "admins":"Array of user model Object id",
-            "moderator": "Array of user model Object id"
+            "moderator": "Array of user model Object id",
+            "group": "Object id of group id"
         },
         "posts": {
             "content": "string, required",
-            "user": "Object id of User model"
+            "user": "Object id of User model",
+            "group": "Object id of group"
         },
         "comments": {
             "content": "string, required",
-            "user": "Object id of User model"
+            "user": "Object id of User model",
+            "group": "Object id of group",
+            "post": "Object id of post"
         }
     },
     "actions":{
