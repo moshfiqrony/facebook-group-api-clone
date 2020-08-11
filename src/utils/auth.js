@@ -45,7 +45,7 @@ export const login = async (req, res) => {
             })
         if (match) {
             let token = await newToken(user)
-            let authenticated = await TokenModel.findOneAndUpdate({ user: user.id }, {token: token})
+            let authenticated = await TokenModel.updateOne({ user: user.id }, { token: token })
             if (authenticated && token) {
                 return res.status(OK).send({
                     data: {
@@ -90,24 +90,30 @@ export const register = async (req, res) => {
                 .then(hash => {
                     pass = hash
                 })
-            const user = await UserModel.create({ ...req.body, password: pass })
-            const profile = await ProfileModel.create({user: user.id})
-            const authenticated = await TokenModel.create({ user: user.id, token: '' })
+            const user = await UserModel.create({ ...req.body, password: pass });
+            const profile = await ProfileModel.create({ user: user.id });
+            const authenticated = await TokenModel.create({ user: user.id, token: '' });
             if (!user || !authenticated || !profile) {
-                return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'))
+                await UserModel.deleteOne({ id: user.id });
+                await ProfileModel.deleteOne({ user: user.id });
+                await TokenModel.deleteOne({ user: user.id });
+                return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'));
             }
             return res.status(CREATED).send({
                 data: 'User created'
             });
         } catch (error) {
-            return res.status(NOT_ACCEPTABLE).send({ error: error.errors[Object.keys(error.errors)[0]].properties })
+            const user = await UserModel.findOneAndDelete({ email: req.body.email });
+            await ProfileModel.deleteOne({ user: user.id });
+            await TokenModel.deleteOne({ user: user.id });
+            return res.status(NOT_ACCEPTABLE).send({ error: error.message });
         }
     } else {
         return res.status(NOT_ACCEPTABLE).send(prepareError(
             'Password length should be 6 or more',
             'tracked',
             'password'
-        ))
+        ));
     }
 }
 
@@ -121,11 +127,11 @@ export const protect = async (req, res, next) => {
         const user = await UserModel.findById(payload.id)
             .select('-password')
             .exec();
-        const authenticated = await TokenModel.findOne({user: user.id}).exec();
-        if(user && authenticated.token === token){
+        const authenticated = await TokenModel.findOne({ user: user.id }).exec();
+        if (user && authenticated.token === token) {
             req.user = user
             next();
-        }else{
+        } else {
             return res.status(UNAUTHORIZED).send(prepareError(
                 'Could not validate',
                 'validation',
@@ -133,6 +139,6 @@ export const protect = async (req, res, next) => {
             ))
         }
     } catch (error) {
-        return res.status(UNAUTHORIZED).send({ error: error })
+        return res.status(UNAUTHORIZED).send({ error: error.message })
     }
 }
