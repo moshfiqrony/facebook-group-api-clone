@@ -64,7 +64,7 @@ export const getProfile = async(req, res) => {
         }
         return res.status(OK).send({data: profile})
     } catch (error) {
-        return res.status(NOT_FOUND).send({error: error})
+        return res.status(NOT_FOUND).send({error: error.message})
     }
 }
 
