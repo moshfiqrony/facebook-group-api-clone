@@ -4,7 +4,8 @@ const TokenSchema = Schema({
     user: {
         type: SchemaTypes.ObjectId,
         unique: 'User already exist',
-        required: 'User'
+        required: 'User',
+        ref: 'user'
     },
     token: String
 }, {timestamps: true})
