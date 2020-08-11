@@ -1,9 +1,10 @@
 import {Router} from 'express'
-import {createGroup, getGroup, updateGroup} from '../controllers/Group.Controllers'
+import {createGroup, getGroup, updateGroup, getGroups} from '../controllers/Group.Controllers'
 
 const router = Router();
 
 router.route('/').post(createGroup);
+router.route('/').get(getGroups);
 router.route('/:id').get(getGroup);
 router.route('/:id').put(updateGroup);
 // router.route('/:id/meta').get(getGroupMeta);
