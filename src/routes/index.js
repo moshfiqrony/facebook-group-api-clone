@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import UserRoute from './User.Routes'
+import GroupRoutes from './Group.Routes'
 import { UNAUTHORIZED, NOT_FOUND, OK } from 'http-status-codes';
 import { prepareError } from '../utils/functions';
 import { TokenModel } from '../models/Token.Models';
@@ -7,6 +8,7 @@ import { TokenModel } from '../models/Token.Models';
 const router = Router();
 
 router.use('/user', UserRoute);
+router.use('/group', GroupRoutes);
 router.route('/logout')
     .post(async(req, res) => {
         const user = req?.user;
