@@ -22,29 +22,24 @@ const GroupSchema = Schema({
         required: 'User is required',
         ref: 'user'
     },
+    members:[{
+        type: SchemaTypes.ObjectId,
+        ref: 'user'
+    }],
+    admins:[{
+        type: SchemaTypes.ObjectId,
+        required: 'User is required',
+        ref: 'user'
+    }],
+    moderators:[{
+        type: SchemaTypes.ObjectId,
+        ref: 'user'
+    }]
 
 }, {timestamps: true})
-
-const GroupMetaSchema = Schema({
-    admins: [{
-        type: SchemaTypes.ObjectId,
-        ref: 'user',
-        required: 'One admin is required'
-    }],
-    moderators: [{
-        type: SchemaTypes.ObjectId,
-        ref: 'user',
-    }],
-    group: {
-        type: SchemaTypes.ObjectId,
-        ref: 'group'
-    }
-})
 
 
 
 GroupSchema.plugin(require('mongoose-beautiful-unique-validation'));
-GroupMetaSchema.plugin(require('mongoose-beautiful-unique-validation'));
 
 export const GroupModel = model('group', GroupSchema)
-export const GroupMetaModel = model('group-meta', GroupMetaSchema)
