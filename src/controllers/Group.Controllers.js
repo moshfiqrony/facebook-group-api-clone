@@ -9,13 +9,11 @@ export const createGroup = async(req, res) => {
             name: req.body.name,
             description: req?.body?.description ?? '',
             type: req.body.type,
-        })
-        const groupMeta = await GroupMetaModel.create({
+            members:[req.user.id],
             admins: [req.user.id],
-            moderator: [],
-            group: group.id
+            moderators: [],
         })
-        if(group && groupMeta){
+        if(group){
             return res.status(CREATED).send({data: group})
         }
     } catch (error) {
@@ -25,7 +23,7 @@ export const createGroup = async(req, res) => {
 
 export const getGroup = async(req, res) => {
     try {
-        const group = await GroupModel.findById(req.params.id);
+        const group = await GroupModel.findOne(req.params.id);
         if(group){
             return res.status(OK).send({data: group})
         }
@@ -36,9 +34,10 @@ export const getGroup = async(req, res) => {
 
 export const getGroups = async(req, res) => {
     try {
-        const group = await GroupModel.find({user: req.user.id});
-        if(group){
-            return res.status(OK).send({data: group})
+        const groups = await GroupModel.find({});
+        if(groups){
+            console.log(req.user.id)
+            return res.status(OK).send({data: groups.filter(item => item.members.includes(req.user.id))})
         }
     } catch (error) {
         res.status(NOT_FOUND).send({error: error})
