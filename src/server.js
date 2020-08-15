@@ -8,7 +8,7 @@ import {login, register, protect} from './utils/auth'
 
 try {
     connect('mongodb://localhost:27017/fb-group-api',
-        { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+        { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false },
         (e) => console.log('db connected', e)
     )
 } catch (err) {
