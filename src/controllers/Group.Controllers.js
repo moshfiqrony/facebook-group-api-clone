@@ -72,10 +72,10 @@ export const updateGroup = async (req, res) => {
 }
 
 export const addMember = async (req, res) => {
-    if (!req.params.id || !req.body.member) {
+    if (!req?.params?.id || !req?.body?.member) {
         return res.status(NOT_ACCEPTABLE).send({ error: 'ID and member needed' })
     }
-    const status = await GroupModel.updateOne({ _id: req.params.id, admins: [req.user.id] }, { "$addToSet": { "members": req.body.member } });
+    const status = await GroupModel.findOneAndUpdate({ _id: req.params.id, admins: [req.user.id] }, { "$addToSet": { "members": req.body.member } }, {new: true});
     if (status) {
         return res.status(OK).send({ data: status });
     }
@@ -83,14 +83,14 @@ export const addMember = async (req, res) => {
 }
 
 export const removeMember = async (req, res) => {
-    if (!req.params.id || !req.body.member) {
+    if (!req?.params?.id || !req?.body?.member) {
         return res.status(NOT_ACCEPTABLE).send({ error: 'ID and member needed' })
     }
 
     const status = await GroupModel.findOne({ _id: req.params.id, admins: { "$in": [req.body.member] } })
     const status2 = await GroupModel.findOne({ _id: req.params.id, moderators: { "$in": [req.body.member] } })
 
-    if (!status || !status2) {
+    if (status || status2) {
         return res.status(NOT_ACCEPTABLE).send({ error: 'This person cannot be removed' })
     }
 
