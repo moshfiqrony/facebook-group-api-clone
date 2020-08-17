@@ -91,21 +91,24 @@ export const register = async (req, res) => {
                     pass = hash
                 })
             const user = await UserModel.create({ ...req.body, password: pass });
+            if(!user){
+                return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'));
+            }
             const profile = await ProfileModel.create({ user: user.id });
+            if(!profile){
+                await UserModel.deleteOne({ id: user.id });
+                return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'));
+            }
             const authenticated = await TokenModel.create({ user: user.id, token: '' });
-            if (!user || !authenticated || !profile) {
+            if (!authenticated) {
                 await UserModel.deleteOne({ id: user.id });
                 await ProfileModel.deleteOne({ user: user.id });
-                await TokenModel.deleteOne({ user: user.id });
                 return res.status(NOT_ACCEPTABLE).send(prepareError('Cannot create user', 'tracked', 'user'));
             }
             return res.status(CREATED).send({
                 data: 'User created'
             });
         } catch (error) {
-            const user = await UserModel.findOneAndDelete({ email: req.body.email });
-            await ProfileModel.deleteOne({ user: user.id });
-            await TokenModel.deleteOne({ user: user.id });
             return res.status(NOT_ACCEPTABLE).send({ error: error.message });
         }
     } else {
