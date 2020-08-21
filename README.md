@@ -13,7 +13,9 @@
 </div>
 This is an API created using NodeJS, MongoDB, ExpressJS. Thi is a clone of facebook's group API
 
-
+# Table of contents
+1. [Endpoints](#Endpoints)
+1. [Topic I loved Most](#Topic-I-loved-Most)
 
 # Endpoints 
 - Register an user - **POST** to **/api/register**
@@ -26,3 +28,13 @@ This is an API created using NodeJS, MongoDB, ExpressJS. Thi is a clone of faceb
 - Get all the groups - **GET** to **/api/group**
 - Get a group - **GET** to **/api/group/:id**
 - Update a group - **PUT** to **/api/group/:id**
+
+
+
+# Topic I loved Most
+Here are the topics that I really loved about **ExpressJS, Mongoose, NodeJS**
+* [Mongoose Populate](https://mongoosejs.com/docs/populate.html)
+* [Mongoose autopopulate](https://plugins.mongoosejs.io/plugins/autopopulate)
+* [mongoose-beautiful-unique-validation](https://www.npmjs.com/package/mongoose-beautiful-unique-validation)
+* [Mongodb operator](https://docs.mongodb.com/manual/reference/operator/)
+* [Mongodb operator update-array](https://docs.mongodb.com/manual/reference/operator/update-array/)
