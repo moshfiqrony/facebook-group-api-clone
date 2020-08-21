@@ -1,4 +1,4 @@
-import { GroupMetaModel, GroupModel } from '../models/Group.Models'
+import { GroupModel } from '../models/Group.Models'
 import { NOT_FOUND, OK, CREATED, NOT_ACCEPTABLE, NOT_MODIFIED } from 'http-status-codes'
 import { prepareError } from '../utils/functions';
 
@@ -29,7 +29,10 @@ export const getGroup = async (req, res) => {
     try {
         const group = await GroupModel
             .findOne({ _id: req.params.id, "members": { "$in": [req.user.id] } })
-            .exec();
+            .populate('members', '-password -createdAt -updatedAt')
+            .populate('user', '-password -createdAt -updatedAt')
+            .populate('admins', '-password -createdAt -updatedAt')
+            .populate('modaretors', '-password -createdAt -updatedAt')
         if (group) {
             return res.status(OK).send({ data: group })
         }
