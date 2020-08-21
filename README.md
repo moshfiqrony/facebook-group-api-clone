@@ -26,8 +26,14 @@ This is an API created using NodeJS, MongoDB, ExpressJS. Thi is a clone of faceb
 - Update Logged in user profile - **PUT** to **/api/user/profile**
 - Create a group - **POST** to **/api/group**
 - Get all the groups - **GET** to **/api/group**
-- Get a group - **GET** to **/api/group/:id**
-- Update a group - **PUT** to **/api/group/:id**
+- Get a group - **GET** to **/api/group/pass_group_id_here**
+- Update a group - **PUT** to **/api/group/pass_group_id_here**
+- Add Moderator to a group - **PUT** to **/api/post/pass_group_id_here/moderator**
+- Delete Moderator to a group - **DELETE** to **/api/post/pass_group_id_here/moderator**
+- Add admin to a group - **PUT** to **/api/post/pass_group_id_here/admin**
+- Delete admin to a group - **DELETE** to **/api/post/pass_group_id_here/admin** 
+- Add member to a group - **PUT** to **/api/post/pass_group_id_here/member**
+- Delete member to a group - **DELETE** to **/api/post/pass_group_id_here/member**
 
 
 
