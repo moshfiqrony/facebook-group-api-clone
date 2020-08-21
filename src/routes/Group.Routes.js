@@ -13,11 +13,5 @@ router.route('/:id/member').put(addMember)
 router.route('/:id/member').delete(removeMember)
 router.route('/:id/admin').put(addAdmin)
 router.route('/:id/admin').delete(removeAdmin)
-// router.route('/:id/meta').get(getGroupMeta);
-// router.route('/:id/meta').get(createGroupMeta);
-// router.route('/:id').delete(removeGroup);
-// router.route('/:id/admin').get(getAdmins)
-// router.route('/:id/admin').put(addAdmin)
-// router.route('/:id/moderator').get(getModerator)
 
 export default router;
